@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">AI News Daily</string>
+    <string name="top_stories">Top Stories</string>
+    <string name="article_image_content_description">Article image</string>
 </resources>

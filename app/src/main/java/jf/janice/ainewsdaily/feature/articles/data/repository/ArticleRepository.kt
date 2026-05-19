@@ -1,0 +1,16 @@
+package jf.janice.ainewsdaily.feature.articles.data.repository
+
+import jf.janice.ainewsdaily.core.network.ArticleApi
+import jf.janice.ainewsdaily.feature.articles.data.model.toArticleData
+import jf.janice.ainewsdaily.feature.articles.presentation.model.ArticleData
+import javax.inject.Inject
+
+class ArticleRepository @Inject constructor(
+    private val articleApi: ArticleApi,
+) {
+    suspend fun getArticles(): List<ArticleData> {
+        return articleApi.getArticles().articles.map { article ->
+            article.toArticleData()
+        }
+    }
+}
