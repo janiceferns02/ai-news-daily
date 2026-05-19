@@ -1,3 +1,6 @@
+import java.util.Properties
+import java.io.FileInputStream
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
@@ -23,6 +26,14 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    // This reads the local.properties file so the variables can be used below.
+    val localProperties = Properties()
+    val localPropertiesFile = rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        localProperties.load(FileInputStream(localPropertiesFile))
+    }
+    val apiKey = localProperties.getProperty("NEWS_API_KEY") ?: ""
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -31,10 +42,10 @@ android {
                 "proguard-rules.pro"
             )
 
-            buildConfigField("String", "NEWS_API_KEY", "\"${project.findProperty("NEWS_API_KEY") ?: ""}\"")
+            buildConfigField("String", "NEWS_API_KEY", "\"$apiKey\"")
         }
         debug {
-            buildConfigField("String", "NEWS_API_KEY", "\"${project.findProperty("NEWS_API_KEY") ?: ""}\"")
+            buildConfigField("String", "NEWS_API_KEY", "\"$apiKey\"")
         }
     }
     compileOptions {
