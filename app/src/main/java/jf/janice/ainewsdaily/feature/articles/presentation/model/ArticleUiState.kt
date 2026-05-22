@@ -8,6 +8,11 @@ sealed interface ArticleUiState {
     ) : ArticleUiState
 
     data class Error(
-        val message: String,
+        val type: ArticleErrorType,
     ) : ArticleUiState
+}
+
+enum class ArticleErrorType {
+    Network,
+    Generic,
 }

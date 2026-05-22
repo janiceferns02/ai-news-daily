@@ -4,7 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jf.janice.ainewsdaily.feature.articles.data.repository.ArticleRepository
+import jf.janice.ainewsdaily.feature.articles.presentation.model.ArticleErrorType
 import jf.janice.ainewsdaily.feature.articles.presentation.model.ArticleUiState
+import jf.janice.ainewsdaily.feature.articles.presentation.util.isNetworkError
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -32,11 +34,12 @@ class ArticleViewModel @Inject constructor(
                 emitState(ArticleUiState.Success(articles))
             } catch (e: Exception) {
                 Timber.e(e, "Failed to load articles")
-                emitState(
-                    ArticleUiState.Error(
-                        message = e.message ?: "Failed to load articles",
-                    ),
-                )
+                val errorType = if (e.isNetworkError()) {
+                    ArticleErrorType.Network
+                } else {
+                    ArticleErrorType.Generic
+                }
+                emitState(ArticleUiState.Error(type = errorType))
             }
         }
     }
@@ -62,8 +65,8 @@ class ArticleViewModel @Inject constructor(
 
             is ArticleUiState.Error -> {
                 Timber.d(
-                    "Emitting ArticleUiState.Error with message: %s",
-                    state.message,
+                    "Emitting ArticleUiState.Error with type: %s",
+                    state.type,
                 )
             }
         }

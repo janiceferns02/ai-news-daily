@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -33,6 +34,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import jf.janice.ainewsdaily.R
 import jf.janice.ainewsdaily.feature.articles.presentation.model.ArticleData
+import jf.janice.ainewsdaily.feature.articles.presentation.model.ArticleErrorType
 import jf.janice.ainewsdaily.feature.articles.presentation.model.ArticleUiState
 import jf.janice.ainewsdaily.feature.articles.presentation.util.formatArticleDate
 import jf.janice.ainewsdaily.feature.articles.presentation.viewmodel.ArticleViewModel
@@ -47,14 +49,16 @@ fun ArticleScreen(
 
     ArticleScreenContent(
         uiState = uiState,
+        onRetry = viewModel::loadArticles,
         modifier = modifier,
     )
 }
 
 @Composable
 fun ArticleScreenContent(
-    uiState: ArticleUiState,
     modifier: Modifier = Modifier,
+    uiState: ArticleUiState,
+    onRetry: () -> Unit = {}
 ) {
     Column(
         modifier = modifier
@@ -80,17 +84,11 @@ fun ArticleScreenContent(
             }
 
             is ArticleUiState.Error -> {
-                Box(
+                ArticleErrorContent(
+                    errorType = uiState.type,
+                    onRetry = onRetry,
                     modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text(
-                        text = uiState.message,
-                        style = MaterialTheme.typography.bodyLarge,
-                        textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.error,
-                    )
-                }
+                )
             }
 
             is ArticleUiState.Success -> {
@@ -124,6 +122,41 @@ fun ArticleScreenContent(
                             }
                         }
                     }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ArticleErrorContent(
+    errorType: ArticleErrorType,
+    onRetry: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val messageResId = when (errorType) {
+        ArticleErrorType.Network -> R.string.error_network
+        ArticleErrorType.Generic -> R.string.error_generic
+    }
+
+    Box(
+        modifier = modifier,
+        contentAlignment = Alignment.Center,
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Text(
+                text = stringResource(messageResId),
+                style = MaterialTheme.typography.bodyLarge,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+
+            if (errorType == ArticleErrorType.Network) {
+                Spacer(modifier = Modifier.height(16.dp))
+                Button(onClick = onRetry) {
+                    Text(text = stringResource(R.string.retry))
                 }
             }
         }
