@@ -5,6 +5,8 @@ sealed interface ArticleUiState {
 
     data class Success(
         val articles: List<ArticleData>,
+        val isLoadingMore: Boolean = false,
+        val isRefreshing: Boolean = false
     ) : ArticleUiState
 
     data class Error(

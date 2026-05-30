@@ -12,14 +12,22 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,10 +43,11 @@ import coil.compose.AsyncImage
 import jf.janice.ainewsdaily.R
 import jf.janice.ainewsdaily.feature.articles.presentation.model.ArticleData
 import jf.janice.ainewsdaily.feature.articles.presentation.model.ArticleErrorType
+import jf.janice.ainewsdaily.feature.articles.presentation.model.ArticleUiEvent
 import jf.janice.ainewsdaily.feature.articles.presentation.model.ArticleUiState
-import jf.janice.ainewsdaily.feature.articles.presentation.util.formatArticleDate
 import jf.janice.ainewsdaily.feature.articles.presentation.viewmodel.ArticleViewModel
 import jf.janice.ainewsdaily.ui.theme.AINewsDailyTheme
+import kotlinx.coroutines.flow.filter
 
 @Composable
 fun ArticleScreen(
@@ -46,20 +55,52 @@ fun ArticleScreen(
     viewModel: ArticleViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val snackBarHostState = remember { SnackbarHostState() }
 
-    ArticleScreenContent(
-        uiState = uiState,
-        onRetry = viewModel::loadArticles,
-        modifier = modifier,
-    )
+    LaunchedEffect(viewModel.uiEvent) {
+        viewModel.uiEvent.collect { event ->
+            when(event) {
+                is ArticleUiEvent.ShowSnackBar -> {
+                    snackBarHostState.showSnackbar(message = event.message)
+                }
+            }
+        }
+    }
+
+    Scaffold(
+        snackbarHost = { SnackbarHost(hostState = snackBarHostState) },
+        modifier = Modifier.fillMaxSize()
+    ) { innerPadding ->
+        ArticleScreenContent(
+            uiState = uiState,
+            onRetry = viewModel::loadArticles,
+            onLoadMore = viewModel::loadNextPage,
+            onRefresh = { viewModel.loadArticles(isRefresh = true) },
+            modifier = modifier.padding(innerPadding),
+        )
+    }
 }
 
 @Composable
 fun ArticleScreenContent(
     modifier: Modifier = Modifier,
     uiState: ArticleUiState,
-    onRetry: () -> Unit = {}
+    onRetry: () -> Unit = {},
+    onLoadMore: () -> Unit = {},
+    onRefresh: () -> Unit = {}
 ) {
+    val listState = rememberLazyListState()
+
+    LaunchedEffect(listState) {
+        snapshotFlow {
+            val layoutInfo = listState.layoutInfo
+            val lastVisibleIndex = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: -1
+            lastVisibleIndex >= layoutInfo.totalItemsCount - 2
+        }
+            .filter { it }
+            .collect { onLoadMore() }
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -92,33 +133,53 @@ fun ArticleScreenContent(
             }
 
             is ArticleUiState.Success -> {
-                if (uiState.articles.isEmpty()) {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Text(
-                            text = "No articles available",
-                            style = MaterialTheme.typography.bodyLarge,
-                            textAlign = TextAlign.Center,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    }
-                } else {
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                    ) {
-                        itemsIndexed(uiState.articles) { index, article ->
-                            if (index == 0) {
-                                FeaturedArticleItem(article = article)
-                            } else {
-                                CompactArticleItem(article = article)
+                PullToRefreshBox(
+                    isRefreshing = uiState.isRefreshing,
+                    onRefresh = onRefresh,
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    if (uiState.articles.isEmpty()) {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Text(
+                                text = "No articles available",
+                                style = MaterialTheme.typography.bodyLarge,
+                                textAlign = TextAlign.Center,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                    } else {
+                        LazyColumn(
+                            state = listState,
+                            modifier = Modifier.fillMaxSize(),
+                        ) {
+                            itemsIndexed(uiState.articles) { index, article ->
+                                if (index == 0) {
+                                    FeaturedArticleItem(article = article)
+                                } else {
+                                    CompactArticleItem(article = article)
+                                }
+                                if (index < uiState.articles.lastIndex) {
+                                    HorizontalDivider(
+                                        modifier = Modifier.padding(vertical = 16.dp),
+                                        color = MaterialTheme.colorScheme.outlineVariant,
+                                    )
+                                }
                             }
-                            if (index < uiState.articles.lastIndex) {
-                                HorizontalDivider(
-                                    modifier = Modifier.padding(vertical = 16.dp),
-                                    color = MaterialTheme.colorScheme.outlineVariant,
-                                )
+
+                            if (uiState.isLoadingMore) {
+                                item {
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(vertical = 16.dp),
+                                        contentAlignment = Alignment.Center,
+                                    ) {
+                                        CircularProgressIndicator()
+                                    }
+                                }
                             }
                         }
                     }
@@ -245,12 +306,11 @@ private fun ArticleDateRow(
     date: String?,
     modifier: Modifier = Modifier,
 ) {
-    val formattedDate = formatArticleDate(date)
-    if (formattedDate.isBlank()) return
+    if (date.isNullOrBlank()) return
 
     Spacer(modifier = Modifier.height(8.dp))
     Text(
-        text = formattedDate,
+        text = date,
         modifier = modifier.fillMaxWidth(),
         style = MaterialTheme.typography.bodySmall,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -299,7 +359,7 @@ private fun ArticleScreenContentPreview() {
 
     AINewsDailyTheme {
         ArticleScreenContent(
-            uiState = ArticleUiState.Success(sampleArticles),
+            uiState = ArticleUiState.Success(sampleArticles, false),
         )
     }
 }

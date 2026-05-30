@@ -8,8 +8,12 @@ import javax.inject.Inject
 class ArticleRepository @Inject constructor(
     private val articleApi: ArticleApi,
 ) {
-    suspend fun getArticles(): List<ArticleData> {
-        return articleApi.getArticles().articles.map { article ->
+    suspend fun getArticles(
+        page: Int,
+    ): List<ArticleData> {
+        return articleApi.getArticles(
+            page = page
+        ).articles.map { article ->
             article.toArticleData()
         }
     }
