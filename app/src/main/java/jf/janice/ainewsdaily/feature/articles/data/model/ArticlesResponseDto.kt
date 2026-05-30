@@ -3,6 +3,7 @@ package jf.janice.ainewsdaily.feature.articles.data.model
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import jf.janice.ainewsdaily.feature.articles.presentation.model.ArticleData
+import jf.janice.ainewsdaily.feature.articles.presentation.util.formatArticleDate
 
 @JsonClass(generateAdapter = true)
 data class ArticlesResponseDto(
@@ -28,6 +29,6 @@ fun ArticleDto.toArticleData(): ArticleData {
         title = title,
         description = description,
         imageUrl = urlToImage,
-        date = publishedAt,
+        date = formatArticleDate(publishedAt),
     )
 }

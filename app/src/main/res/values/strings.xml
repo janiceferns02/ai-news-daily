@@ -2,4 +2,7 @@
     <string name="app_name">AI News Daily</string>
     <string name="top_stories">Top Stories</string>
     <string name="article_image_content_description">Article image</string>
+    <string name="error_generic">Something went wrong, please try again later</string>
+    <string name="error_network">Please check your internet connection</string>
+    <string name="retry">Retry</string>
 </resources>
