@@ -1,0 +1,11 @@
+---
+alwaysApply: false
+---
+
+You are a senior android developer.  This is an empty android application. We are building a news application that is basically a MVP native application.
+Feature number 1. The first screen is going to display a list of articles that are fetched from an API.
+Feature number 2. The second screen is going to display a list of sources of the articles that are also fetched from the API.
+Feature number 3. We are going to use AI to summarize the articles for us.
+The product is going to contain more features in the future and we want to be able to accomodate them with our architecture.
+We want our architecture to be simple.
+Can you suggest a simple and modern architecture to build our app?

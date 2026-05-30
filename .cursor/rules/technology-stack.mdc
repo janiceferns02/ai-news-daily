@@ -1,0 +1,30 @@
+---
+alwaysApply: false
+---
+
+Below is the tech stack and third party libraries that I want to use:
+
+* Generic
+- Hilt
+- Coroutines
+- Timber
+
+* UI
+- Jetpack Compose
+- Material 3
+- Compose Navigation
+- Hilt navigation compose
+- State flow
+- Coil
+
+* Presentation
+- State flow
+
+* Data
+- Retrofit
+- Moshi
+- Moshi Kotlin codegen
+- OkHTTP
+- OkHTT logging
+
+Please find compatible versions of those dependencies and add them to the build gradle files of my app.
