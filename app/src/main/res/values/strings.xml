@@ -5,4 +5,6 @@
     <string name="error_generic">Something went wrong, please try again later</string>
     <string name="error_network">Please check your internet connection</string>
     <string name="retry">Retry</string>
+    <string name="nav_articles">Articles</string>
+    <string name="nav_sources">Sources</string>
 </resources>

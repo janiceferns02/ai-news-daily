@@ -1,0 +1,43 @@
+---
+alwaysApply: false
+---
+
+Important: I don not want to include the Domain layer and Usecases unless instructed otherwise
+Important: I want the top level packaging to be feature based. First articles and then the sources.
+
+* UI Layer 
+- Single Activity with Composables
+- Navigation Components
+
+* Presentation Layer
+- Viewmodels
+- UI State classes
+- Presentation models eg. Article
+
+* Data Layer
+- Repository Implementation 
+- Remote data sources (API)
+- Data Models eg. ArticleData
+- No Database or local storage need
+- Repository pattern, no interface only repository implementation, single source of true, easy to switch data sources
+
+* MVVM Pattern
+- Viewmodels handle UI logic and UI state
+- Composables are only responsible for UI
+- State classes represent UI State
+
+* Dependency Injection
+- Wew ill use Hilt for Dependency Injection
+
+* Coroutines & State Flow
+- Coroutines for asynchronous operations
+- Handles API calls and data processing
+- State flow between view model and UI for manage UI state updates
+
+* Key concepts
+- Clean Architecture
+- Important: Simplicity
+- Separation of concerns
+- Testability
+- Maintainability
+- I don’t want you to create any bases classes

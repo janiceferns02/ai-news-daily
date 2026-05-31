@@ -6,7 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.ui.Modifier
 import dagger.hilt.android.AndroidEntryPoint
-import jf.janice.ainewsdaily.feature.articles.presentation.ui.ArticleScreen
+import jf.janice.ainewsdaily.navigation.MainScreen
 import jf.janice.ainewsdaily.ui.theme.AINewsDailyTheme
 
 @AndroidEntryPoint
@@ -16,7 +16,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             AINewsDailyTheme {
-                ArticleScreen(modifier = Modifier)
+                MainScreen(modifier = Modifier)
             }
         }
     }
