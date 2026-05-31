@@ -18,15 +18,12 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -52,10 +49,10 @@ import kotlinx.coroutines.flow.filter
 @Composable
 fun ArticleScreen(
     modifier: Modifier = Modifier,
+    snackBarHostState: SnackbarHostState,
     viewModel: ArticleViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val snackBarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(viewModel.uiEvent) {
         viewModel.uiEvent.collect { event ->
@@ -67,18 +64,13 @@ fun ArticleScreen(
         }
     }
 
-    Scaffold(
-        snackbarHost = { SnackbarHost(hostState = snackBarHostState) },
-        modifier = Modifier.fillMaxSize()
-    ) { innerPadding ->
-        ArticleScreenContent(
-            uiState = uiState,
-            onRetry = viewModel::loadArticles,
-            onLoadMore = viewModel::loadNextPage,
-            onRefresh = { viewModel.loadArticles(isRefresh = true) },
-            modifier = modifier.padding(innerPadding),
-        )
-    }
+    ArticleScreenContent(
+        uiState = uiState,
+        onRetry = viewModel::loadArticles,
+        onLoadMore = viewModel::loadNextPage,
+        onRefresh = { viewModel.loadArticles(isRefresh = true) },
+        modifier = modifier
+    )
 }
 
 @Composable
