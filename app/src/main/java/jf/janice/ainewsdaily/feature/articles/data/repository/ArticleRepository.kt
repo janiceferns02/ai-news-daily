@@ -1,6 +1,6 @@
 package jf.janice.ainewsdaily.feature.articles.data.repository
 
-import jf.janice.ainewsdaily.core.network.ArticleApi
+import jf.janice.ainewsdaily.feature.articles.data.network.ArticleApi
 import jf.janice.ainewsdaily.feature.articles.data.model.toArticleData
 import jf.janice.ainewsdaily.feature.articles.presentation.model.ArticleData
 import javax.inject.Inject

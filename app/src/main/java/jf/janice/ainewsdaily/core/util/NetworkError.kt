@@ -1,4 +1,4 @@
-package jf.janice.ainewsdaily.feature.articles.presentation.util
+package jf.janice.ainewsdaily.core.util
 
 import java.io.IOException
 
