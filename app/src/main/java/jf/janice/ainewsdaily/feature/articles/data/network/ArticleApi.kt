@@ -1,4 +1,4 @@
-package jf.janice.ainewsdaily.core.network
+package jf.janice.ainewsdaily.feature.articles.data.network
 
 import jf.janice.ainewsdaily.BuildConfig
 import jf.janice.ainewsdaily.feature.articles.data.model.ArticlesResponseDto

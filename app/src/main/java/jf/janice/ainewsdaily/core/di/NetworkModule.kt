@@ -5,7 +5,8 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import jf.janice.ainewsdaily.core.network.ArticleApi
+import jf.janice.ainewsdaily.feature.articles.data.network.ArticleApi
+import jf.janice.ainewsdaily.feature.sources.data.network.SourceApi
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -59,5 +60,11 @@ object NetworkModule {
     @Singleton
     fun provideArticleApi(retrofit: Retrofit): ArticleApi {
         return retrofit.create(ArticleApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSourceApi(retrofit: Retrofit): SourceApi {
+        return retrofit.create(SourceApi::class.java)
     }
 }
