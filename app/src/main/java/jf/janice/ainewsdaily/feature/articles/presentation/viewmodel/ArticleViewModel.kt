@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jf.janice.ainewsdaily.feature.articles.data.repository.ArticleRepository
+import jf.janice.ainewsdaily.feature.ai.data.repository.AiRepository
+import jf.janice.ainewsdaily.feature.ai.presentation.model.AiSummary
 import jf.janice.ainewsdaily.feature.articles.presentation.model.ArticleErrorType
 import jf.janice.ainewsdaily.feature.articles.presentation.model.ArticleUiEvent
 import jf.janice.ainewsdaily.feature.articles.presentation.model.ArticleUiState
@@ -21,6 +23,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ArticleViewModel @Inject constructor(
     private val articleRepository: ArticleRepository,
+    private val aiRepository: AiRepository,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<ArticleUiState>(ArticleUiState.Loading)
@@ -118,6 +121,34 @@ class ArticleViewModel @Inject constructor(
                 emitState(currentState.copy(isLoadingMore = false))
             }
         }
+    }
+
+    fun getAiSummary() {
+        val currentState = _uiState.value as? ArticleUiState.Success ?: return
+        if (currentState.isAiSummaryLoading) return
+
+        viewModelScope.launch {
+            emitState(currentState.copy(isAiSummaryLoading = true, aiSummary = null))
+            try {
+                val articleTitles = currentState.articles.mapNotNull { it.title }
+                val summaryData = aiRepository.getAiNewsSummary(articleTitles)
+                emitState(
+                    currentState.copy(
+                        isAiSummaryLoading = false,
+                        aiSummary = AiSummary(summary = summaryData.summary)
+                    )
+                )
+            } catch (e: Exception) {
+                Timber.e(e, "Failed to get AI summary")
+                emitState(currentState.copy(isAiSummaryLoading = false))
+                _uiEvent.send(ArticleUiEvent.ShowSnackBar("Failed to get AI summary"))
+            }
+        }
+    }
+
+    fun dismissAiSummary() {
+        val currentState = _uiState.value as? ArticleUiState.Success ?: return
+        emitState(currentState.copy(aiSummary = null))
     }
 
     private fun emitState(state: ArticleUiState) {
