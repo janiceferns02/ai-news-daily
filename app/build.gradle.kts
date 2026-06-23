@@ -33,6 +33,7 @@ android {
         localProperties.load(FileInputStream(localPropertiesFile))
     }
     val apiKey = localProperties.getProperty("NEWS_API_KEY") ?: ""
+    val gptKey = localProperties.getProperty("OPEN_API_KEY") ?: ""
 
     buildTypes {
         release {
@@ -43,9 +44,11 @@ android {
             )
 
             buildConfigField("String", "NEWS_API_KEY", "\"$apiKey\"")
+            buildConfigField("String", "OPEN_API_KEY", "\"$gptKey\"")
         }
         debug {
             buildConfigField("String", "NEWS_API_KEY", "\"$apiKey\"")
+            buildConfigField("String", "OPEN_API_KEY", "\"$gptKey\"")
         }
     }
     compileOptions {
