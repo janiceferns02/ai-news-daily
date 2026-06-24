@@ -5,9 +5,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import jf.janice.ainewsdaily.feature.ai.data.network.OpenAiApi
-import jf.janice.ainewsdaily.feature.articles.data.network.ArticleApi
-import jf.janice.ainewsdaily.feature.sources.data.network.SourceApi
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -85,23 +82,5 @@ object NetworkModule {
             .client(okHttpClient)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
-    }
-
-    @Provides
-    @Singleton
-    fun provideArticleApi(@NewsRetrofit retrofit: Retrofit): ArticleApi {
-        return retrofit.create(ArticleApi::class.java)
-    }
-
-    @Provides
-    @Singleton
-    fun provideSourceApi(@NewsRetrofit retrofit: Retrofit): SourceApi {
-        return retrofit.create(SourceApi::class.java)
-    }
-
-    @Provides
-    @Singleton
-    fun provideOpenAiApi(@GptRetrofit retrofit: Retrofit): OpenAiApi {
-        return retrofit.create(OpenAiApi::class.java)
     }
 }
