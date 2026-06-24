@@ -14,6 +14,7 @@ data class SourceDto(
     val id: String,
     val name: String,
     val description: String?,
+    val url: String?
 )
 
 fun SourceDto.toSourceData(): SourceData {
@@ -21,5 +22,6 @@ fun SourceDto.toSourceData(): SourceData {
         id = id,
         name = name,
         description = description,
+        url = url
     )
 }
