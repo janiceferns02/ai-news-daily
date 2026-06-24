@@ -18,20 +18,18 @@
 
 * 🔄 Infinite Scroll & Refresh: Built-in endless pagination, atomic state handling via Job cancellations, and a PullToRefreshBox.
 
-## 🛠️ Tech Stack
-* UI Framework: Jetpack Compose (Declarative layouts)
+## 🛠️ Architecture & Tech Stack
 
-* Asynchronous Engine: Kotlin Coroutines & Asynchronous Data Streams (Flow, StateFlow, Channel)
+This project is built using **Clean Architecture** and **MVVM**, emphasizing a decoupled, reactive, and highly scalable codebase.
 
-* Dependency Injection: Hilt 
-
-* Network Stack: Retrofit / OkHttp
-
-* Serialization: Moshi (with custom runtime JSON adapter reflection transformations)
-
-* Image Pipeline: Coil
-
-* Logging Engine: Timber
+* **Core Language:** Kotlin
+* **UI Framework:** Jetpack Compose (Declarative layouts with Material 3)
+* **Asynchronous Engine:** Kotlin Coroutines & Asynchronous Data Streams (Flow, StateFlow, Channel)
+* **Dependency Injection:** Hilt (Interface-driven modules)
+* **Network Stack:** Retrofit / OkHttp
+* **Serialization:** Moshi (with custom runtime JSON adapter reflection transformations)
+* **Image Pipeline:** Coil
+* **Logging Engine:** Timber
 
 ## ⚙️ Quick Setup & Installation
 
