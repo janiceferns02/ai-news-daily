@@ -3,13 +3,13 @@ package jf.janice.ainewsdaily.feature.articles.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import jf.janice.ainewsdaily.feature.articles.data.repository.ArticleRepository
-import jf.janice.ainewsdaily.feature.ai.data.repository.AiRepository
 import jf.janice.ainewsdaily.feature.ai.presentation.model.AiSummary
 import jf.janice.ainewsdaily.feature.articles.presentation.model.ArticleErrorType
 import jf.janice.ainewsdaily.feature.articles.presentation.model.ArticleUiEvent
 import jf.janice.ainewsdaily.feature.articles.presentation.model.ArticleUiState
 import jf.janice.ainewsdaily.core.util.isNetworkError
+import jf.janice.ainewsdaily.feature.ai.presentation.model.AiRepository
+import jf.janice.ainewsdaily.feature.articles.presentation.ArticleRepository
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow

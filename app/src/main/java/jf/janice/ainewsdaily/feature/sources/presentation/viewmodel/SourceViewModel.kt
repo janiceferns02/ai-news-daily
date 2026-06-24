@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jf.janice.ainewsdaily.core.util.isNetworkError
-import jf.janice.ainewsdaily.feature.sources.data.repository.SourceRepository
+import jf.janice.ainewsdaily.feature.sources.presentation.SourcesRepository
 import jf.janice.ainewsdaily.feature.sources.presentation.model.SourceErrorType
 import jf.janice.ainewsdaily.feature.sources.presentation.model.SourceUiState
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SourceViewModel @Inject constructor(
-    private val sourceRepository: SourceRepository,
+    private val sourceRepository: SourcesRepository,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<SourceUiState>(SourceUiState.Loading)

@@ -2,23 +2,24 @@ package jf.janice.ainewsdaily.feature.ai.data.repository
 
 import com.squareup.moshi.Moshi
 import jf.janice.ainewsdaily.BuildConfig
-import jf.janice.ainewsdaily.feature.ai.data.AiSummaryData
 import jf.janice.ainewsdaily.feature.ai.data.network.OpenAiApi
 import jf.janice.ainewsdaily.feature.ai.data.network.OpenAiRequest
 import jf.janice.ainewsdaily.feature.ai.data.network.SummaryResponse
+import jf.janice.ainewsdaily.feature.ai.presentation.model.AiRepository
+import jf.janice.ainewsdaily.feature.ai.presentation.model.AiSummary
 import javax.inject.Inject
 
-class AiRepository @Inject constructor(
+class AiRepositoryImpl @Inject constructor(
     private val gptApi: OpenAiApi,
     private val moshi: Moshi
-) {
+): AiRepository {
 
-    suspend fun getAiNewsSummary(
+    override suspend fun getAiNewsSummary(
         articleTitles : List<String>,
-    ) : AiSummaryData {
+    ) : AiSummary {
 
         if(articleTitles.isEmpty())
-            return AiSummaryData("No news is available")
+            return AiSummary("No news is available")
 
         val prompt = buildPrompt(articleTitles)
 
@@ -46,7 +47,7 @@ class AiRepository @Inject constructor(
             responseText
         }
 
-        return AiSummaryData(summary)
+        return AiSummary(summary)
     }
 
     private fun buildPrompt(articleTitles: List<String>): String {
