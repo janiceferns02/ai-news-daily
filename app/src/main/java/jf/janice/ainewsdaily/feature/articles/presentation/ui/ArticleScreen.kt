@@ -16,10 +16,10 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -199,12 +199,9 @@ fun ArticleScreenContent(
                                 } else {
                                     CompactArticleItem(article = article)
                                 }
-                                if (index < uiState.articles.lastIndex) {
-                                    HorizontalDivider(
-                                        modifier = Modifier.padding(vertical = 16.dp),
-                                        color = MaterialTheme.colorScheme.outlineVariant,
-                                    )
-                                }
+
+                                Spacer(modifier = Modifier.height(16.dp))
+
                             }
 
                             if (uiState.isLoadingMore) {
@@ -302,9 +299,10 @@ private fun CompactArticleItem(
     article: ArticleData,
     modifier: Modifier = Modifier,
 ) {
-    Column(modifier = modifier.fillMaxWidth()) {
+    Card(modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp)) {
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().padding(16.dp),
         ) {
             Column(
                 modifier = Modifier
@@ -349,7 +347,7 @@ private fun ArticleDateRow(
     Spacer(modifier = Modifier.height(8.dp))
     Text(
         text = date,
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth().padding(16.dp),
         style = MaterialTheme.typography.bodySmall,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
         textAlign = TextAlign.End,
